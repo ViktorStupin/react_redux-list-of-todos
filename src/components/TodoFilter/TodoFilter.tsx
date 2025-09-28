@@ -27,7 +27,7 @@ export const TodoFilter: React.FC = () => {
           data-cy="searchInput"
           className="input"
           type="text"
-          placeholder="Search todos..."
+          placeholder="Search todos."
           value={query}
           onChange={handleQueryChange}
         />

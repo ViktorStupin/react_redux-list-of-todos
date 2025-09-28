@@ -1,3 +1,2 @@
-export { default } from '../features/currentTodo/currentTodoSlice';
-export * from '../features/currentTodo/currentTodoSlice';
-export * from '../features/currentTodo/types';
+export { default } from './currentTodo/currentTodoSlice';
+export * from './currentTodo/currentTodoSlice';

@@ -1,14 +1,13 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setCurrentTodo } from '../../features/currentTodo/currentTodoSlice';
 import { getUser } from '../../api';
 import { User } from '../../types/User';
 import { Loader } from '../Loader';
 
 export const TodoModal: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const currentTodo = useAppSelector(state => state.currentTodo);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);

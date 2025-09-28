@@ -1,21 +1,21 @@
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Loader, TodoFilter, TodoList, TodoModal } from './components';
 import { getTodos } from './api';
 import { setTodos } from './features/todos/todosSlice';
 import { Todo } from './types/Todo';
-import React = require('react');
 
 export const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
+  const storeTodos = useAppSelector(state => state.todos);
 
   useEffect(() => {
     getTodos()
-      .then((todos: Todo[]) => {
-        dispatch(setTodos(todos));
+      .then((loadedTodos: Todo[]) => {
+        dispatch(setTodos(loadedTodos));
       })
       .catch(() => {
         // Обробка помилки без використання змінної error
@@ -38,7 +38,7 @@ export const App = () => {
 
             <div className="block">
               {isLoading && <Loader />}
-              {!isLoading && <TodoList />}
+              {!isLoading && <TodoList todos={storeTodos} />}
             </div>
           </div>
         </div>
