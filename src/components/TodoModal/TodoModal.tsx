@@ -1,57 +1,80 @@
 /* eslint-disable */
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { clearCurrentTodo } from '../../features/currentTodo';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../../app/hooks';
+import { setCurrentTodo } from '../../features/currentTodo/currentTodoSlice';
+import { getUser } from '../../api';
+import { User } from '../../types/User';
+import { Loader } from '../Loader';
 
 export const TodoModal: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { todo, user, isLoading } = useAppSelector(state => state.currentTodo);
+  const dispatch = useDispatch();
+  const currentTodo = useAppSelector(state => state.currentTodo);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (!todo) {
+  useEffect(() => {
+    if (currentTodo) {
+      setIsLoading(true);
+      getUser(currentTodo.userId)
+        .then(setUser)
+        .finally(() => setIsLoading(false));
+    } else {
+      setUser(null);
+    }
+  }, [currentTodo]);
+
+  const handleClose = () => {
+    dispatch(setCurrentTodo(null));
+  };
+
+  if (!currentTodo) {
     return null;
   }
 
-  const handleClose = () => {
-    dispatch(clearCurrentTodo());
-  };
-
   return (
-    <div data-cy="modal" className="modal is-active">
+    <div className="modal is-active" data-cy="modal">
       <div className="modal-background" onClick={handleClose}></div>
+
+      {isLoading && <Loader />}
+
       <div className="modal-card">
         <header className="modal-card-head">
-          <p data-cy="modal-header" className="modal-card-title">
-            Todo #{todo.id}
-          </p>
+          <div
+            className="modal-card-title has-text-weight-medium"
+            data-cy="modal-header"
+          >
+            Todo #{currentTodo.id}
+          </div>
+
           <button
-            data-cy="modal-close"
+            type="button"
             className="delete"
+            aria-label="close"
+            data-cy="modal-close"
             onClick={handleClose}
           ></button>
         </header>
 
-        <section className="modal-card-body">
-          {isLoading ? (
-            <div data-cy="loader">Loading user...</div>
-          ) : (
-            <>
-              <div className="field">
-                <label className="label">Title:</label>
-                <div data-cy="modal-title" className="content">
-                  {todo.title}
-                </div>
-              </div>
+        <div className="modal-card-body">
+          <p className="block" data-cy="modal-title">
+            {currentTodo.title}
+          </p>
 
-              {user && (
-                <div className="field">
-                  <label className="label">User:</label>
-                  <div data-cy="modal-user" className="content">
-                    {todo.completed ? 'Done' : 'Planned'} by {user.name}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </section>
+          <p className="block" data-cy="modal-user">
+            {currentTodo.completed ? (
+              <strong className="has-text-success">Done</strong>
+            ) : (
+              <strong className="has-text-danger">Planned</strong>
+            )}
+            {' by '}
+            {user ? (
+              <a href={`mailto:${user.email}`}>{user.name}</a>
+            ) : (
+              <span>Loading user...</span>
+            )}
+          </p>
+        </div>
       </div>
     </div>
   );

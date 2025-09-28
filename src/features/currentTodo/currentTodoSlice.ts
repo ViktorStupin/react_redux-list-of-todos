@@ -58,7 +58,8 @@ const currentTodoSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loadUser.pending, state => {
-        return { // ← використовуємо return замість мутації
+        return {
+          // ← використовуємо return замість мутації
           ...state,
           isLoading: true,
         };
