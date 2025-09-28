@@ -3,13 +3,13 @@ export interface Todo {
   userId: number;
   title: string;
   completed: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-// src/types/User.ts
 export interface User {
   id: number;
   name: string;
+  username?: string;
+  email?: string;
 }
-
-// src/types/FilterStatus.ts
-export type FilterStatus = 'all' | 'active' | 'completed';
